@@ -4,7 +4,7 @@
 
 * 搭配 Simplybook 預約系統 / LINE OA / Google Apps Script
 * 加上 CRM 客戶明細表
-* 最終想打造 預約 & LINE 預約 & LINE 流量池經營 & LINE Message API 傳訊息給客戶 & 提醒預約…等功能
+* 最終想打造 預約 & LINE 預約 & LINE CRM & LINE Message API 傳訊息給客戶 & 提醒預約…等功能
 
 
 ## 為何要寫code
@@ -12,10 +12,10 @@
 * 透過 SimplyBook 可以在 LINE OA 開啟 LIFF，進行預約
 * 但我想要得到消費者 LINE 的 ID，但 Simplybook 的 API / 後台，都沒有給資料
 * 為了想要進行提醒 & 再行銷
-  * 例如：付款完成
-  * 例如：預約日期的前一天提醒
-  * 例如：兩個月後自動發送問卷
-  * 例如：自動發動優惠卷
+  * 例如：付款完成 (Trigger: 還不知道)
+  * 例如：預約日期的前一天提醒 (Trigger: crontab)
+  * 例如：兩個月後自動發送問卷 (Trigger: crontab)
+  * 例如：寫完問卷自動發動優惠卷 (Trigger: Google Form submit)
 * 因此需要想方設法取得 LINE ID
 * 需要
   * 下方第一點：跳轉頁面用的 LIFF (取得 LINE ID)
@@ -46,18 +46,15 @@ sequenceDiagram
 ```
 
 #### ※ 1
-LIFF 中繼，使用 Github Page 當做中轉站
+* LIFF，使用 Github Page 當做中轉站
+* 共有三種尺寸的 html
+  * 例：https://liff.github.io/tall
+  * 例：https://liff.github.io/full
+  * 例：https://liff.github.io/compact
+* 網址參數
+  * goto 要轉址到的 url
+  * 例：https://liff.github.io/{size}?goto={redirect_url}
 
-例：三種尺寸的 html
-https://liff.github.io/tall
-https://liff.github.io/full
-https://liff.github.io/compact
-
-GET 參數
-
-https://liff.github.io/{size}?goto={redirect_url}
-
-goto 要轉址到的 url
 
 ### Simplybook Webhook 通知
 
@@ -69,7 +66,7 @@ sequenceDiagram
     participant D as Google Sheet
     note left of A: Case 1 Create
     A->>B: 建立新預約
-    B->>C: Post Request to GAS <br> status = create (※1)
+    B->>C: Post Request to GAS <br> status = create
     C->>D: Take record <br> insert data (booking_id & status)
     D->>C: 
     C->>B: RestAPI get detail
@@ -80,10 +77,6 @@ sequenceDiagram
     B->>C: Post Request to GAS <br> status = change / cancel
     C->>D: Update data <br>(status / booking_date / time)
 ```
-
-#### ※1
-
-Can get booking_id / booking_hash / status
 
 ### Google Apps Script
 
@@ -125,3 +118,8 @@ flowchart
   - [ ] deploy LIFF html page
   - [ ] deploy Google Apps Script
   - [ ] Register LIFF URL
+
+## 關於我
+
+* LINE 官方網站：
+* Instagram：
