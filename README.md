@@ -1,14 +1,30 @@
-# Clasp Gas LIFF
+# Booking Gas LIFF
 
 ## 專案目的：
 
-* 搭配 Siyplybook 預約系統 / LINE OA / Google Apps Script
+* 搭配 Simplybook 預約系統 / LINE OA / Google Apps Script
 * 加上 CRM 客戶明細表
 * 最終想打造 預約 & LINE 預約 & LINE 流量池經營 & LINE Message API 傳訊息給客戶 & 提醒預約…等功能
 
+
+## 為何要寫code
+
+* 透過 SimplyBook 可以在 LINE OA 開啟 LIFF，進行預約
+* 但我想要得到消費者 LINE 的 ID，但 Simplybook 的 API / 後台，都沒有給資料
+* 為了想要進行提醒 & 再行銷
+  * 例如：付款完成
+  * 例如：預約日期的前一天提醒
+  * 例如：兩個月後自動發送問卷
+  * 例如：自動發動優惠卷
+* 因此需要想方設法取得 LINE ID
+* 需要
+  * 下方第一點：跳轉頁面用的 LIFF (取得 LINE ID)
+  * 下方第二點：收集 LINE ID 的 DB / API ...
+
+
 ## 流程
 
-### LINE OA & LIFF 使用情景
+### 1. LINE OA & LIFF 使用情景
 
 ```mermaid
 sequenceDiagram
@@ -80,20 +96,24 @@ flowchart
     B --->|SimplyBook & status != create| F[Edit booking sheet order status]
 ```
 
+
 ## Todo
 
 - Google Apps Script
-  - [ ] doPost API
-  - [ ] LIFF save to log sheet
-  - [ ] Simplybook create
-    - [ ] Save log
-    - [ ] Save data to Google Sheet
-    - [ ] Use booking_id to request detail info
-    - [ ] Update google calendar content
-  - [ ] Simplybook others
-    - [ ] Save log
-    - [ ] Use booking id to find row number
-    - [ ] Edit it
+  - [X] doPost API
+  - [X] Save log
+  - Simplybook
+    - [X] Use simplybook api to get booking detail
+    - [ ] Create booking
+      - [ ] Save data to Google Sheet
+      - [ ] Update google calendar content
+    - [ ] Simplybook others
+      - [ ] Use booking id to find row number
+      - [ ] Edit it
+  - LIFF
+    - [ ] If LINE ID is a new, then Save LINE ID and LINE Name to Google Sheet
+    - [ ] else if LIND ID is exist and LINE Name has updated, then Update LINE Name to Google sheet
+    - [ ] else (have same LINE ID) then ignore it
 - LIFF
   - [ ] LIFF html css
   - [ ] LIFF javascript code
@@ -102,5 +122,6 @@ flowchart
     - [ ] send request to google apps script
     - [ ] redirect to url from url pramas goto
 - Others
-  - [ ] deploy
+  - [ ] deploy LIFF html page
+  - [ ] deploy Google Apps Script
   - [ ] Register LIFF URL

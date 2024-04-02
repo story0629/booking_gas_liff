@@ -1,0 +1,265 @@
+{
+    "log": [
+        {
+            "id": 8,
+            "datetime": "2024-03-18 14:28:48",
+            "type": "cancel",
+            "user_login": "story0629@gmail.com",
+            "user_name": "akashictommy  "
+        },
+        {
+            "id": 7,
+            "datetime": "2024-03-18 14:26:13",
+            "type": "confirm",
+            "user_login": null,
+            "user_name": null
+        },
+        {
+            "id": 6,
+            "datetime": "2024-03-18 14:26:04",
+            "type": "create",
+            "user_login": null,
+            "user_name": null
+        }
+    ],
+    "additional_fields": [
+        {
+            "field_name": "想詢問的內容 (請儘量寫詳細一點，謝謝)",
+            "field_type": "textarea",
+            "values": [
+                ""
+            ],
+            "field": "f11d1f810d7b4ecbba0a42d0776df81f",
+            "value": "線上視訊會議",
+            "file_hash": null,
+            "id": 2
+        },
+        {
+            "field_name": "從哪裡知道 Tommy 的",
+            "field_type": "text",
+            "values": [
+                ""
+            ],
+            "field": "ac4124d859f9ddb9068eb8862ada5f73",
+            "value": "803",
+            "file_hash": null,
+            "id": 3
+        },
+        {
+            "field_name": "LINE 名稱",
+            "field_type": "text",
+            "values": [
+                ""
+            ],
+            "field": "e105ea40f388afa159893d8c021578b8",
+            "value": "0928137112",
+            "file_hash": null,
+            "id": 4
+        },
+        {
+            "field_name": "匯款後 5 碼 (信用卡付款不需要填)",
+            "field_type": "text",
+            "values": [
+                ""
+            ],
+            "field": "82701a78f084760b7527f1061c01d573",
+            "value": "aaaaa",
+            "file_hash": null,
+            "id": 7
+        },
+        {
+            "field_name": "匯款日期 (信用卡付款不需要填)",
+            "field_type": "date",
+            "values": [
+                ""
+            ],
+            "field": "a93390ea3f14bcf8c27e5fe47b453488",
+            "value": "2025-11-05",
+            "file_hash": null,
+            "id": 8
+        }
+    ],
+    "products": [],
+    "attributes": [],
+    "invoice": {
+        "client": {
+            "can_be_edited": false,
+            "is_deleted": true,
+            "id": 3,
+            "name": "測試測試",
+            "email": "story0629+test@gmail.com",
+            "phone": "+886928137112",
+            "address1": null,
+            "address2": null,
+            "city": null,
+            "zip": null,
+            "country_id": null,
+            "state_id": null,
+            "full_address": ""
+        },
+        "created_by_user_id": null,
+        "created_by_user": null,
+        "approved_by_user_id": null,
+        "approved_by_user": null,
+        "refunded_by_user_id": null,
+        "refunded_by_user": null,
+        "used_discount_amount": null,
+        "booking_date_start": null,
+        "company_info": null,
+        "payment_link": null,
+        "client_additional_info": [],
+        "id": 2,
+        "number": "O-00000002",
+        "datetime": "2024-03-18 14:26:04",
+        "due_datetime": "2024-03-18 14:36:04",
+        "payment_datetime": null,
+        "amount": 600.0,
+        "recurring_amount": 0.0,
+        "deposit": 600.0,
+        "is_with_deposit_amount": false,
+        "deposit_is_client_can_pay_later": 0,
+        "rest_amount": 0.0,
+        "discount_amount": 0.0,
+        "taxes": [],
+        "tax_amount": 0,
+        "currency": "TWD",
+        "tip": null,
+        "client_id": 3,
+        "description": "",
+        "payment_received": false,
+        "payment_processor": "delay",
+        "lines": [
+            {
+                "booking_ids": [
+                    3
+                ],
+                "bookings": null,
+                "tickets": [],
+                "deposit": 600.0,
+                "is_with_deposit_amount": false,
+                "description_string": "服務項目: 阿卡西紀錄解讀 (2024-03-28 20:00, q2g2qlx) x1 600.00 TWD",
+                "id": "2",
+                "invoice_id": 2,
+                "object_name": "阿卡西紀錄解讀 (2024-03-28 20:00, q2g2qlx)",
+                "name": "阿卡西紀錄解讀 (2024-03-28 20:00, q2g2qlx)",
+                "type": "booking",
+                "discount_ratio": 0.0,
+                "discount_amount": 0.0,
+                "discount": 0.0,
+                "price": 600.0,
+                "price_without_tax": 600.0,
+                "final_price": 600.0,
+                "recurring_price_without_tax": 0.0,
+                "qty": 1.0,
+                "package_qty": 0.0,
+                "tax": null,
+                "tax_ratio": 0.0,
+                "tax_amount": 0.0,
+                "amount": 600.0,
+                "recurring_tax_amount": 0.0,
+                "rest_amount": 0.0,
+                "currency": "TWD"
+            }
+        ],
+        "status": "paid",
+        "support_recurring_payment_method": false,
+        "require_recurring_payment_method": false,
+        "recurring_profile_id": null,
+        "promotion_instances": [],
+        "package_instances": [],
+        "deposit_child_invoice": null,
+        "deposit_parent_invoice": null,
+        "refund_datetime": null,
+        "sbpay_reference_id": 6,
+        "sbpay_invoice_id": ""
+    },
+    "membership": null,
+    "user_status": null,
+    "comment": null,
+    "resources": [],
+    "record_date": "2024-03-18 06:26:04",
+    "batch_type": null,
+    "batch_id": null,
+    "provider": {
+        "id": 2,
+        "name": "解讀師 Tommy",
+        "qty": 1,
+        "email": "story0629@gmail.com",
+        "description": "<p>我是阿卡西紀錄解讀師 Tommy<br><span style=\"font-size: 1rem;\">師承 美國琳達豪兒系統 &amp; 宇寧老師</span></p><p>2022年12月，阿卡西紀錄初階結業<br><span style=\"font-size: 1rem;\">2023年01月，阿卡西紀錄高階結業</span></p><p>專業阿卡西紀錄解讀師<br><span style=\"font-size: 1rem;\">已解讀 100 位以上的個案 (2024.03)</span></p>",
+        "phone": "+886928137112",
+        "picture": null,
+        "picture_preview": null,
+        "color": null,
+        "is_active": true,
+        "is_visible": true,
+        "services": [
+            "2",
+            "3"
+        ]
+    },
+    "service": {
+        "id": 2,
+        "name": "阿卡西紀錄解讀",
+        "description": "<div>阿卡西紀錄解讀服務。</div><div>Tommy 會連進你的阿卡西紀錄，並詢問你的阿卡西紀錄，你想問的問題。歡迎先跟我說你想要解讀的內容。</div><div>讓我們在一個小時內，盡量榨乾阿卡西紀錄。</div><div><br></div><div>時長：一個小時&nbsp;</div><div>進行方式：使用 Google Meet 遠距進行</div><div>費用：NT$ 600&nbsp;</div><div><br></div><div>匯款資訊：</div><div>・銀行：玉山銀行 808</div><div>・帳戶：0820 979 127057</div><div>・分行：蘆洲分行</div><div>・戶名：吳嘉皓</div><div>・目前信用卡金流申請中，非台灣人者請私訊我。</div><div><br></div><div>注意事項：</div><div>・阿卡西紀錄解讀時你不需要做什麼，放輕鬆就好。</div><div>・解讀時可以錄音、錄影、做筆記。</div><div>・全程使用 Google Meet 遠距進行，最好可以開鏡頭，但不開也沒關係。</div><div>・Google Meet 的連結，在預約完成後會送到你的 Email (在預約時填寫的 Email)</div><div>・解讀的 24 小時前請勿喝酒，若當天精神不好，也需要改天。</div>",
+        "price": 600.0,
+        "currency": "TWD",
+        "tax_id": null,
+        "tax": null,
+        "duration": 60,
+        "buffer_time_after": 0,
+        "recurring_settings": null,
+        "picture": null,
+        "picture_preview": null,
+        "memberships": [],
+        "providers": [
+            2
+        ],
+        "is_active": true,
+        "is_visible": true,
+        "duration_type": null,
+        "limit_booking": null,
+        "min_group_booking": null
+    },
+    "client": {
+        "can_be_edited": false,
+        "is_deleted": true,
+        "id": 3,
+        "name": "測試測試",
+        "email": "story0629+test@gmail.com",
+        "phone": "+886928137112",
+        "address1": null,
+        "address2": null,
+        "city": null,
+        "zip": null,
+        "country_id": null,
+        "state_id": null,
+        "full_address": ""
+    },
+    "status": "canceled",
+    "membership_id": null,
+    "invoice_id": 2,
+    "invoice_status": "paid",
+    "invoice_payment_received": false,
+    "invoice_number": "O-00000002",
+    "invoice_datetime": "2024-03-18 14:26:04",
+    "invoice_payment_processor": "delay",
+    "ticket_code": null,
+    "ticket_validation_datetime": null,
+    "ticket_is_used": null,
+    "testing_status": null,
+    "user_status_id": null,
+    "category_id": null,
+    "location_id": null,
+    "category": null,
+    "location": null,
+    "can_be_edited": false,
+    "can_be_canceled": false,
+    "id": 3,
+    "code": "q2g2qlx",
+    "start_datetime": "2024-03-28 20:00:00",
+    "end_datetime": "2024-03-28 21:00:00",
+    "service_id": 2,
+    "provider_id": 2,
+    "client_id": 3,
+    "duration": 60
+}
