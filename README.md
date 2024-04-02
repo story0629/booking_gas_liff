@@ -76,7 +76,7 @@ Now need to call another api again
 ### Google Apps Script
 
 ```mermaid
-flowchart TD
+flowchart
     A[GAS doPost] --> B([From Simplybook Webhook or LIFF<br>judge by booking_id is exist])
     B -->|LIFF| C[Save to log sheet]
     B -->|SimplyBook & status = create| E[Use Booking id request to Simplybook to get Cusomter info]
