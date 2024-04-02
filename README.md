@@ -69,10 +69,6 @@ sequenceDiagram
 
 Can get booking_id / booking_hash / status
 
-But i can not use md5 decode at Google Apps Script
-
-Now need to call another api again
-
 ### Google Apps Script
 
 ```mermaid
@@ -98,7 +94,6 @@ flowchart
     - [ ] Save log
     - [ ] Use booking id to find row number
     - [ ] Edit it
-  - [ ] md5 decode
 - LIFF
   - [ ] LIFF html css
   - [ ] LIFF javascript code
