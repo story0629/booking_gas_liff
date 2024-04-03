@@ -127,17 +127,17 @@ interface typeRefreshResponse {
 
 
 // Use rest api to get booking detail
-// Step1：define setting_sheet (sheet_name is setting)
+// Step1：define setting_sheet (sheet_name is Settings)
 // Step2：get api_key and secret_key from setting_sheet
 // Step3：use booking_id & key to send get request
 // Step4：return response
 const getSimplyBookDetail = async (booking_id: string) => {
-    const setting_sheet = ws.getSheetByName('setting')!;
+    const setting_sheet = ws.getSheetByName('Settings')!;
 
     // todo: range 位置需要確認
-    const url: string = setting_sheet.getRange(1, 2).getValue();
-    const api_token: string = setting_sheet.getRange(1, 2).getValue();
-    const company: string = setting_sheet.getRange(1, 2).getValue();
+    const url: string = setting_sheet.getRange("B2").getValue();
+    const api_token: string = setting_sheet.getRange("B4").getValue();
+    const company: string = setting_sheet.getRange("B3").getValue();
     // get request, need set key into header
     const endponint = `${url}/admin/bookings/${booking_id}`;
     const options: typeRequestOptions = {
@@ -158,7 +158,7 @@ const getSimplyBookDetail = async (booking_id: string) => {
     } else if (response.getResponseCode() === 401) {
         // token 已過期
         const refresh_endpoint = `${url}/admin/auth/refresh-token`;
-        const refresh_token: string = setting_sheet.getRange(1, 2).getValue();
+        const refresh_token: string = setting_sheet.getRange("B5").getValue();
         const refresh_options: typeRequestOptions = {
             method: 'post',
             payload: {
@@ -171,8 +171,8 @@ const getSimplyBookDetail = async (booking_id: string) => {
             // update setting_sheet with new token
             const body: typeRefreshResponse = JSON.parse(refresh_response.getContentText());
             const { token, refresh_token } = body
-            setting_sheet.getRange(1, 2).setValue(token);
-            setting_sheet.getRange(1, 2).setValue(refresh_token);
+            setting_sheet.getRange("B4").setValue(token);
+            setting_sheet.getRange("B5").setValue(refresh_token);
             // get data one more time
             const response = await sendRequest(endponint, options)
             response.getResponseCode() === 200 ? result = JSON.parse(response.getContentText()) : result = null;
