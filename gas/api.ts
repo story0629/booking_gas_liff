@@ -210,13 +210,21 @@ const simplybookCancel = (sheet: GoogleAppsScript.Spreadsheet.Sheet, detail: typ
 }
 
 
-// INSERT INTO LINE_OA_List sheet
-// content like [current datetime utc+8, sub, name, picture, email, goto]
 const liffCreate = (sheet: GoogleAppsScript.Spreadsheet.Sheet, content: typePostContent) => {
+    // Step1：INSERT INTO LINE_OA_List sheet
+    // content like [current datetime utc+8, sub, name, picture, email, goto]
     const { sub, name, picture, email, goto } = content;
 
     const date = new Date();
     const current_datetime = Utilities.formatDate(date, timeZone, "yyyy-MM-dd HH:mm:ss");
     const data = [current_datetime, sub, name, picture, email, goto];
     sheet.getRange(sheet.getLastRow() + 1, 1, 1, data.length).setValues([data]);
+
+    // Step2：Mapping with customer_list，
+    // if customer_list.line_name is equal to name, then set sub to customer_list
+    // else if customer_list.email is equal to email, then set sub to customer_list
+    // else if customer_list.phone is equal to phone, then set sub to customer_list
+    // else ignore it
+
+    // TODO: 之後上線再來處理
 }
