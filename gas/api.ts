@@ -16,6 +16,7 @@ interface typePostContent {
     name: string;
     picture: string;
     email?: string;
+    goto: string; // 要轉址去的網址
 }
 
 type typePostType = 'Simplybook' | 'LIFF';
@@ -53,6 +54,7 @@ interface typeSimplyBookAdditionalFields {
 }
 
 const ws = SpreadsheetApp.getActiveSpreadsheet();
+const timeZone = AdsApp.currentAccount().getTimeZone();
 
 
 // Google Apps Script Post Endpoint
@@ -107,6 +109,7 @@ const savePostDataToSheet = async (type: typePostType, content: typePostContent)
     } else if (type === 'LIFF') {
         // Step5 LIFF 的情況
         const sheet = ws.getSheetByName('LINE_OA_List')!;
+        liffCreate(sheet, content);
     }
 }
 
@@ -192,8 +195,8 @@ const sendRequest = async (endpoint: string, options: typeRequestOptions) => {
 // create new row in booking_list sheet
 const simplybookCreate = (sheet: GoogleAppsScript.Spreadsheet.Sheet, detail: typeSimplyBookDetail) => {
     // Step1：INSERT INTO booking_list
-    // content like ["", "", booking_id, service.name, start_datetime, end_datetime, service.price, ]
     // [index, customer_id, booking_id, client_id, service_name, start date, end_date, price, payment_method, 後 5 碼, 確定付款, 訂單status, notion連結, create_at, update_at]
+    // content like [row id -1, "", booking_id, service.name, start_datetime, end_datetime, service.price, ]
 
     // Step2：INSERT INTO customer_list if customer_id is not exist
     // content like ["", "", customer_id, customer_name, email, phone, ]
@@ -207,4 +210,13 @@ const simplybookCancel = (sheet: GoogleAppsScript.Spreadsheet.Sheet, detail: typ
 }
 
 
-const liffCreate = (content: typePostContent) => { }
+// INSERT INTO LINE_OA_List sheet
+// content like [current datetime utc+8, sub, name, picture, email, goto]
+const liffCreate = (sheet: GoogleAppsScript.Spreadsheet.Sheet, content: typePostContent) => {
+    const { sub, name, picture, email, goto } = content;
+
+    const date = new Date();
+    const current_datetime = Utilities.formatDate(date, timeZone, "yyyy-MM-dd HH:mm:ss");
+    const data = [current_datetime, sub, name, picture, email, goto];
+    sheet.getRange(sheet.getLastRow() + 1, 1, 1, data.length).setValues([data]);
+}
