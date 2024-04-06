@@ -65,8 +65,8 @@ const doPost = (e: GoogleAppsScript.Events.DoPost) => {
     const content: typePostContent = JSON.parse(e.postData.contents);
 
     const type: typePostType = content.hasOwnProperty('booking_id') ? 'Simplybook' : 'LIFF';
-    const sheet = ws.getSheetByName('webhook_log')!;
-    sheet.insertRowBefore(1);
+    const sheet = ws.getSheetByName('Webhook_Log')!;
+    sheet.insertRowBefore(2);
     sheet.getRange(1, 1).setValue(new Date());
     sheet.getRange(1, 2).setValue(type);
     sheet.getRange(1, 3).setValue(content);
@@ -92,7 +92,7 @@ const savePostDataToSheet = async (type: typePostType, content: typePostContent)
             return 'booking_detail is null';
         }
 
-        const sheet = ws.getSheetByName('booking_list')!
+        const sheet = ws.getSheetByName('Booking_List')!
         if (notification_type === 'create') {
             // Step3 新增至 Google Sheet
             simplybookCreate(sheet, booking_detail);
@@ -106,6 +106,7 @@ const savePostDataToSheet = async (type: typePostType, content: typePostContent)
         // 其他 notification_type 例：new_client / create_invoice 因該不用做任何事，放著
     } else if (type === 'LIFF') {
         // Step5 LIFF 的情況
+        const sheet = ws.getSheetByName('LINE_OA_List')!;
     }
 }
 
@@ -187,7 +188,23 @@ const sendRequest = async (endpoint: string, options: typeRequestOptions) => {
     return response;
 }
 
-const simplybookCreate = (sheet: GoogleAppsScript.Spreadsheet.Sheet, detail: typeSimplyBookDetail) => { }
-const simplybookUpdate = (sheet: GoogleAppsScript.Spreadsheet.Sheet, detail: typeSimplyBookDetail) => { }
-const simplybookCancel = (sheet: GoogleAppsScript.Spreadsheet.Sheet, detail: typeSimplyBookDetail) => { }
+// TODO: 之後上線再來處理
+// create new row in booking_list sheet
+const simplybookCreate = (sheet: GoogleAppsScript.Spreadsheet.Sheet, detail: typeSimplyBookDetail) => {
+    // Step1：INSERT INTO booking_list
+    // content like ["", "", booking_id, service.name, start_datetime, end_datetime, service.price, ]
+    // [index, customer_id, booking_id, client_id, service_name, start date, end_date, price, payment_method, 後 5 碼, 確定付款, 訂單status, notion連結, create_at, update_at]
+
+    // Step2：INSERT INTO customer_list if customer_id is not exist
+    // content like ["", "", customer_id, customer_name, email, phone, ]
+}
+const simplybookUpdate = (sheet: GoogleAppsScript.Spreadsheet.Sheet, detail: typeSimplyBookDetail) => {
+    // Step1：UPDATE booking_list
+}
+const simplybookCancel = (sheet: GoogleAppsScript.Spreadsheet.Sheet, detail: typeSimplyBookDetail) => {
+    // Step1：UPDATE booking_list
+    // let order status = cancel, payment_status = refund, update_at = now
+}
+
+
 const liffCreate = (content: typePostContent) => { }
