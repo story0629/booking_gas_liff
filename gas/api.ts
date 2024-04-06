@@ -54,7 +54,7 @@ interface typeSimplyBookAdditionalFields {
 }
 
 const ws = SpreadsheetApp.getActiveSpreadsheet();
-const timeZone = AdsApp.currentAccount().getTimeZone();
+const timeZone = Session.getScriptTimeZone();
 
 
 // Google Apps Script Post Endpoint
@@ -68,10 +68,11 @@ const doPost = (e: GoogleAppsScript.Events.DoPost) => {
 
     const type: typePostType = content.hasOwnProperty('booking_id') ? 'Simplybook' : 'LIFF';
     const sheet = ws.getSheetByName('Webhook_Log')!;
+    const date = new Date();
     sheet.insertRowBefore(2);
-    sheet.getRange(1, 1).setValue(new Date());
-    sheet.getRange(1, 2).setValue(type);
-    sheet.getRange(1, 3).setValue(content);
+    sheet.getRange(2, 1).setValue(Utilities.formatDate(date, timeZone, "yyyy-MM-dd HH:mm:ss"));
+    sheet.getRange(2, 2).setValue(type);
+    sheet.getRange(2, 3).setValue(content);
 
     savePostDataToSheet(type, content);
     return ContentService.createTextOutput('OK');
