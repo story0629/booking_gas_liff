@@ -75,7 +75,10 @@ const doPost = (e: GoogleAppsScript.Events.DoPost) => {
     sheet.getRange(2, 3).setValue(content);
 
     savePostDataToSheet(type, content);
-    return ContentService.createTextOutput('OK');
+
+    return ContentService.createTextOutput(JSON.stringify({ status: "ok" }))
+        .setMimeType(ContentService.MimeType.JSON);
+    // TODO: 405 error, need to resovle it
 }
 
 // save post data to google sheet
