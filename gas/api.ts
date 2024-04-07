@@ -57,6 +57,11 @@ const ws = SpreadsheetApp.getActiveSpreadsheet();
 const timeZone = Session.getScriptTimeZone();
 
 
+const doGet = (e: GoogleAppsScript.Events.DoGet) => {
+    return ContentService.createTextOutput(JSON.stringify(e))
+        .setMimeType(ContentService.MimeType.JSON);
+}
+
 // Google Apps Script Post Endpoint
 // Step1：get post content
 // Step2：Judeg type by content, if booking_id is exist then type is Simplybook else type is LIFF
@@ -64,7 +69,12 @@ const timeZone = Session.getScriptTimeZone();
 // Step4：Save data to google Sheet
 // Step4：return ok
 const doPost = (e: GoogleAppsScript.Events.DoPost) => {
-    const content: typePostContent = JSON.parse(e.postData.contents);
+
+    // judge content is string or not, if string then JSON.parse()
+    let content: typePostContent = e.postData.contents;
+    if (typeof e.postData.contents === 'string') {
+        content = JSON.parse(e.postData.contents);
+    }
 
     const type: typePostType = content.hasOwnProperty('booking_id') ? 'Simplybook' : 'LIFF';
     const sheet = ws.getSheetByName('Webhook_Log')!;
@@ -78,7 +88,6 @@ const doPost = (e: GoogleAppsScript.Events.DoPost) => {
 
     return ContentService.createTextOutput(JSON.stringify({ status: "ok" }))
         .setMimeType(ContentService.MimeType.JSON);
-    // TODO: 405 error, need to resovle it
 }
 
 // save post data to google sheet

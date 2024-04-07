@@ -18,6 +18,7 @@
   // STEP2 check is logined or not
   const isLogined = await liff.isLoggedIn();
   console.log("Step2: ", isLogined);
+  const goto = new URL(location).searchParams.get("goto");
 
   if (!isLogined) {
     // 轉址的網址 目前網址加上 goto
@@ -29,26 +30,28 @@
 
   // STEP3 Get user info
   const user_info = await liff.getDecodedIDToken();
-  const goto = new URL(location).searchParams.get("goto");
 
   console.log("Step3: ", user_info);
   console.log("Step3: ", goto);
 
   // STEP4 Sent post request
   // payload is user_info & goto concat
+  user_info.goto = goto;
   sendPostRequest(user_info);
 
-  //   // STEP4 Redirect to goto
-  //   if (typeof goto === "string") location.href = new URL(goto, location).href;
+  // STEP4 Redirect to goto
+  if (typeof goto === "string") location.href = new URL(goto, location).href;
 })();
 
 const sendPostRequest = async (payload) => {
-  const res = await fetch(
-    "https://script.google.com/macros/s/AKfycbyJY239-j0WXwlttvqpgibdyhvzvkPJ5suMYj59ZktdY7ArLr0ShojK4Rh-ziDIX3_ehQ/exec",
+  await fetch(
+    "https://script.google.com/macros/s/AKfycbybVjk_UwyHE83N_rG8mBGqLIgvyGT1dOX6XUG8kW380A742J58IncE-xrg3qZyGUTJHw/exec",
     {
       method: "POST",
+      mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify(payload),
     }
