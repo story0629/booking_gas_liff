@@ -97,29 +97,30 @@ flowchart
   - [X] Save log
   - Simplybook
     - [X] Use simplybook api to get booking detail
-    - [ ] Create booking
-      - [ ] Save data to Google Sheet
+    - [X] When Create booking
+      - [X] Save data to Google Sheet
       - [ ] Update google calendar content
-    - [ ] Simplybook others
-      - [ ] Use booking id to find row number
-      - [ ] Edit it
+    - [X] Simplybook others status (update / cancel / new_client...)
+      - [X] Use booking id to find row number
+      - [X] Update it
   - LIFF
+    - [X] Take record
     - [ ] If LINE ID is a new, then Save LINE ID and LINE Name to Google Sheet
     - [ ] else if LIND ID is exist and LINE Name has updated, then Update LINE Name to Google sheet
     - [ ] else (have same LINE ID) then ignore it
 - LIFF
-  - [ ] LIFF html css
-  - [ ] LIFF javascript code
-    - [ ] If isLogined is false then exexute `LIFF.login()`
-    - [ ] getLineToken `LIFF.getDecodedIDToken()`
-    - [ ] send request to google apps script
-    - [ ] redirect to url from url pramas goto
+  - [X] LIFF html css
+  - [X] LIFF javascript code
+    - [X] If isLogined is false then exexute `LIFF.login()`
+    - [X] getLineToken `LIFF.getDecodedIDToken()`
+    - [X] send request to google apps script
+    - [X] redirect to url from url pramas goto
 - Others
-  - [ ] deploy LIFF html page
-  - [ ] deploy Google Apps Script
-  - [ ] Register LIFF URL
+  - [X] deploy LIFF html page
+  - [X] deploy Google Apps Script
+  - [X] Register LIFF URL
 
 ## 關於我
 
-* LINE 官方網站：
-* Instagram：
+* LINE 官方帳號： https://line.me/R/ti/p/@632lptka
+* Instagram： https://www.instagram.com/akashic.tommy/
