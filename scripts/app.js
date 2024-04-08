@@ -6,7 +6,7 @@
   // if url pathname "full" line liffID = bbbb
   // if url pathname "compact" line liffID = cccc
 
-  let liffId = null;
+  let liffId = "2004166882-p8e0rDvx";
   if (new URL(location).pathname.includes("tall"))
     liffId = "2004166882-p8e0rDvx";
   if (new URL(location).pathname.includes("full"))
@@ -39,6 +39,7 @@
   // STEP4 Sent post request
   // payload is user_info & goto concat
   user_info.goto = goto;
+  console.log(user_info);
   sendPostRequest(user_info);
 
   // STEP4 Redirect to goto
@@ -47,13 +48,13 @@
 
 const sendPostRequest = async (payload) => {
   await fetch(
-    "https://script.google.com/macros/s/AKfycbzbFYupiDtNio4Yax6ziH8jbPn_IQy0BWovfbserZKflfYa1ntvCFX9Dcj2TA2g8OUixg/exec",
+    "https://script.google.com/macros/s/AKfycbz17-M5PkeoXZmoxGZqc9FFz_zVfmzhnsKy3-9KSiZnHePuZIXyg0s1o27CtN08Wj6anA/exec",
     {
       method: "POST",
       mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
+        Accept: "*/*",
       },
       body: JSON.stringify(payload),
     }
