@@ -93,34 +93,6 @@ const doPost = (e: GoogleAppsScript.Events.DoPost) => {
         .setMimeType(ContentService.MimeType.JSON);
 }
 
-// save post data to google sheet
-// Step1：type: Simplybook or LIFF
-// Step2：if type is Simplybook and use booking_id secret_key to send get request to get detail info
-// Step3：if type is Simplybook and notification_type is create then save [index, booking_id, ... , created_at, updated_at] to booking_list
-// Step4: if type is Simplybook and notification_type is not equal create then user booking_id to get row number and update column
-// if tyle is LIFF and sub is not isit in sheet then save [sub, customer_name, aud, exp, email] to cutomer_list
-const savePostDataToSheet = async (type: typePostType, content: typePostContent) => {
-    // Step1
-    if (type === 'Simplybook') {
-        // Step1 記錄
-        const { booking_id, notification_type } = content;
-
-        // Step2 先取得 Simplybook 的 詳細資料
-        const booking_detail: typeSimplyBookDetail | null = await getSimplyBookDetail(booking_id);
-
-        if (!booking_detail) {
-            return 'booking_detail is null';
-        }
-
-        simplybookLog(notification_type, booking_detail);
-        // 其他 notification_type 例：new_client / create_invoice 因該不用做任何事，放著
-    } else if (type === 'LIFF') {
-        // Step5 LIFF 的情況
-        const sheet = ws.getSheetByName('LINE_OA_List')!;
-        liffCreate(sheet, content);
-    }
-}
-
 interface typeRequestOptions {
     method: 'get' | 'post';
     headers?: {
@@ -209,13 +181,14 @@ const simplybookLog = (type: typeNotificationType, detail: typeSimplyBookDetail)
     // 如果 type 不是 create，需要先找到之前預約的 row number
     let booking_row = -1
     const booking_id = detail.id.toString();
+    const last_row = sheet.getLastRow()
 
     if (type !== 'create') {
         const booking_ids_original: string[][] = sheet.getRange("C:C").getValues();
-        const booking_ids = booking_ids_original.map((d: string[]) => d[0])
-        booking_row = booking_ids.indexOf(booking_id)
+        const booking_ids = booking_ids_original.map((d: string[]) => d[0].toString())
+        booking_row = booking_ids.indexOf(booking_id) + 1 // 得到的是 index，從 0 開始，但 sheet 從 1 開始
     } else {
-        booking_row = sheet.getLastRow() + 1
+        booking_row = last_row + 1 // last_row 是目前最後一行有資料，我要在他的下一行
     }
 
 
@@ -237,7 +210,7 @@ const simplybookLog = (type: typeNotificationType, detail: typeSimplyBookDetail)
     const payment_number = additional_fields.find(field => field.id === 7)!.value;
 
     const booking = []
-    booking.push(""); // index
+    booking.push(last_row - 1); // index
     booking.push(""); // customer_id
     booking.push(detail.id); // booking_id
     booking.push(detail.client.id); // simplybook client id
@@ -292,4 +265,32 @@ const liffCreate = (sheet: GoogleAppsScript.Spreadsheet.Sheet, content: typePost
     // else ignore it
 
     // TODO: 之後上線再來處理
+}
+
+// save post data to google sheet
+// Step1：type: Simplybook or LIFF
+// Step2：if type is Simplybook and use booking_id secret_key to send get request to get detail info
+// Step3：if type is Simplybook and notification_type is create then save [index, booking_id, ... , created_at, updated_at] to booking_list
+// Step4: if type is Simplybook and notification_type is not equal create then user booking_id to get row number and update column
+// if tyle is LIFF and sub is not isit in sheet then save [sub, customer_name, aud, exp, email] to cutomer_list
+const savePostDataToSheet = async (type: typePostType, content: typePostContent) => {
+    // Step1
+    if (type === 'Simplybook') {
+        // Step1 記錄
+        const { booking_id, notification_type } = content;
+
+        // Step2 先取得 Simplybook 的 詳細資料
+        const booking_detail: typeSimplyBookDetail | null = await getSimplyBookDetail(booking_id);
+
+        if (!booking_detail) {
+            return 'booking_detail is null';
+        }
+
+        simplybookLog(notification_type, booking_detail);
+        // 其他 notification_type 例：new_client / create_invoice 因該不用做任何事，放著
+    } else if (type === 'LIFF') {
+        // Step5 LIFF 的情況
+        const sheet = ws.getSheetByName('LINE_OA_List')!;
+        liffCreate(sheet, content);
+    }
 }
