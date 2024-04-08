@@ -25,12 +25,15 @@ interface typeSimplyBookDetail {
     id: number;
     client_id: number;
     code: string;
+    status: string;
     start_datetime: string;
     end_datetime: string;
     invoice_datetime: string; // UTC+8
     payment_received: boolean;
+    invoice_payment_received: boolean;
     service: typeSimplyBookService;
     client: typeSimplyBookClient;
+    log: typeSimplyBookLog[];
     additional_fields: typeSimplyBookAdditionalFields[];
 }
 
@@ -51,6 +54,12 @@ interface typeSimplyBookAdditionalFields {
     id: number;
     field_name: string;
     value: string;
+}
+
+interface typeSimplyBookLog {
+    id: number;
+    datetime: string;
+    type: string;
 }
 
 const ws = SpreadsheetApp.getActiveSpreadsheet();
@@ -77,13 +86,6 @@ const doPost = (e: GoogleAppsScript.Events.DoPost) => {
     }
 
     const type: typePostType = content.hasOwnProperty('booking_id') ? 'Simplybook' : 'LIFF';
-    const sheet = ws.getSheetByName('Webhook_Log')!;
-    const date = new Date();
-    sheet.insertRowBefore(2);
-    sheet.getRange(2, 1).setValue(Utilities.formatDate(date, timeZone, "yyyy-MM-dd HH:mm:ss"));
-    sheet.getRange(2, 2).setValue(type);
-    sheet.getRange(2, 3).setValue(content);
-
     savePostDataToSheet(type, content);
 
     return ContentService.createTextOutput(JSON.stringify({ status: "ok" }))
@@ -99,8 +101,10 @@ const doPost = (e: GoogleAppsScript.Events.DoPost) => {
 const savePostDataToSheet = async (type: typePostType, content: typePostContent) => {
     // Step1
     if (type === 'Simplybook') {
-        // Step2 先取得 Simplybook 的 詳細資料
+        // Step1 記錄
         const { booking_id, notification_type } = content;
+
+        // Step2 先取得 Simplybook 的 詳細資料
         const booking_detail: typeSimplyBookDetail | null = await getSimplyBookDetail(booking_id);
 
         if (!booking_detail) {
@@ -208,11 +212,56 @@ const sendRequest = async (endpoint: string, options: typeRequestOptions) => {
 // create new row in booking_list sheet
 const simplybookCreate = (sheet: GoogleAppsScript.Spreadsheet.Sheet, detail: typeSimplyBookDetail) => {
     // Step1：INSERT INTO booking_list
-    // [index, customer_id, booking_id, client_id, service_name, start date, end_date, price, payment_method, 後 5 碼, 確定付款, 訂單status, notion連結, create_at, update_at]
+    // [index, customer_id, booking_id, client_id, name, service_name, start date, end_date, price, payment_method, 後 5 碼, 確定付款, 訂單status, notion連結, create_at, update_at]
     // content like [row id -1, "", booking_id, service.name, start_datetime, end_datetime, service.price, ]
+
+    const { log, additional_fields } = detail;
+    // 想詢問的內容 - id = 2
+    // 從哪裡知道 tommy - id = 3
+    // LINE 名稱 - id = 4
+    // 匯款後 5 碼 - id = 7
+    // 匯款日期 id = 8
+
+    const take_booking_date = log.find(field => field.type === 'create')!.datetime;
+    const ask_content = additional_fields.find(field => field.id === 2)!.value;
+    const how_to_know_tommy = additional_fields.find(field => field.id === 3)!.value;
+    const line_name = additional_fields.find(field => field.id === 4)!.value;
+    const payment_number = additional_fields.find(field => field.id === 7)!.value;
+
+    const booking = []
+    booking.push(""); // index
+    booking.push(""); // customer_id
+    booking.push(detail.id); // booking_id
+    booking.push(detail.client.id); // simplybook client id
+    booking.push(take_booking_date); // 預約的日期
+    booking.push(detail.client.name); // simplybook client name
+    booking.push(detail.client.email); // simplybook client email
+    booking.push(detail.client.phone); // simplybook client phone
+    booking.push(line_name); // LINE 名稱 name
+    booking.push(detail.service.name); // simplybook service name
+    booking.push(detail.start_datetime); // simplybook start 
+    booking.push(detail.end_datetime); // simplybook end
+    booking.push(ask_content); // 詢問內容
+    booking.push(how_to_know_tommy); // 從哪裡知道 tomm
+    booking.push(detail.service.price); // simplybook service price
+    booking.push(""); // payment_method 不知道資料在哪
+    booking.push(payment_number); // 後 5 碼
+    booking.push(detail.invoice_payment_received); // 收款狀態 不知道是不是用這個
+    booking.push(detail.status); // 訂單狀態 不知道是不是用這個
+
+    const formatDate: string = Utilities.formatDate(new Date(), timeZone, "yyyy-MM-dd HH:mm:ss")
+    booking.push(formatDate) // create_at
+    booking.push(formatDate) // update_at
+
+    // fill booking to sheet Booking_List
+    sheet.getRange(sheet.getLastRow() + 1, 1, 1, booking.length).setValues([booking]);
 
     // Step2：INSERT INTO customer_list if customer_id is not exist
     // content like ["", "", customer_id, customer_name, email, phone, ]
+    // Todo: 還不確定 mappling customer_id 的方式，先 skip
+    // 1. 確認 customer 是不是 exist, 確認的方式
+    // email > line name > simplybook client_id > name
+    // 2. 如果 customer_id 不存在，就新增 customer_list
 }
 const simplybookUpdate = (sheet: GoogleAppsScript.Spreadsheet.Sheet, detail: typeSimplyBookDetail) => {
     // Step1：UPDATE booking_list
