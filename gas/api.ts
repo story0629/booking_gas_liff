@@ -98,9 +98,7 @@ interface typeRequestOptions {
     headers?: {
         [key: string]: string;
     },
-    payload?: {
-        [key: string]: string;
-    }
+    payload?: string;
 }
 
 // Refresh Token 的 Response
@@ -109,6 +107,15 @@ interface typeRefreshResponse {
     refresh_token: string
 }
 
+const sendRequest = async (endpoint: string, options: typeRequestOptions) => {
+    try {
+        const response = await UrlFetchApp.fetch(endpoint, options);
+        return response;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+}
 
 // Use rest api to get booking detail
 // Step1：define setting_sheet (sheet_name is Settings)
@@ -134,41 +141,96 @@ const getSimplyBookDetail = async (booking_id: string) => {
     }
     let result: typeSimplyBookDetail | null = null;
 
-    const response = await sendRequest(endponint, options)
+    console.log("GET DETAIL DATA Start")
+    const response: GoogleAppsScript.URL_Fetch.HTTPResponse | null = await sendRequest(endponint, options)
 
-    // if response.code = 401, need to refresh token and get data one more time
-    if (response.getResponseCode() === 200) {
+    // if response == null, 則要 refresh_token
+    // 若得得 response，則丟入下一階段
+    if (response) {
         result = JSON.parse(response.getContentText());
-    } else if (response.getResponseCode() === 401) {
+    } else if (!response) {
+        console.log("GET DETAIL DATA ERROR, Refresh Token Start")
         // token 已過期
-        const refresh_endpoint = `${url}/admin/auth/refresh-token`;
-        const refresh_token: string = setting_sheet.getRange("B5").getValue();
-        const refresh_options: typeRequestOptions = {
-            method: 'post',
-            payload: {
-                company,
-                refresh_token
-            }
-        }
-        const refresh_response = await sendRequest(refresh_endpoint, refresh_options);
-        if (refresh_response.getResponseCode() === 200) {
-            // update setting_sheet with new token
-            const body: typeRefreshResponse = JSON.parse(refresh_response.getContentText());
-            const { token, refresh_token } = body
-            setting_sheet.getRange("B4").setValue(token);
-            setting_sheet.getRange("B5").setValue(refresh_token);
-            // get data one more time
-            const response = await sendRequest(endponint, options)
-            response.getResponseCode() === 200 ? result = JSON.parse(response.getContentText()) : result = null;
-        }
+        await refreshSimplybookToken(booking_id);
+        result = null
     }
 
     return result;
 }
 
-const sendRequest = async (endpoint: string, options: typeRequestOptions) => {
-    const response = await UrlFetchApp.fetch(endpoint, options);
-    return response;
+const refreshSimplybookToken = async (booking_id: string) => {
+    const setting_sheet = ws.getSheetByName('Settings')!;
+
+    const url: string = setting_sheet.getRange("B2").getValue();
+    const company: string = setting_sheet.getRange("B3").getValue();
+    const refresh_endpoint = `${url}/admin/auth/refresh-token`;
+    const refresh_token: string = setting_sheet.getRange("B5").getValue();
+    const refresh_options: typeRequestOptions = {
+        method: 'post',
+        headers: {
+            "Accept": "*/*",
+            "Content-Type": "application/json"
+        },
+        payload: JSON.stringify({
+            company,
+            refresh_token
+        })
+    }
+
+    const refresh_response: GoogleAppsScript.URL_Fetch.HTTPResponse | null = await sendRequest(refresh_endpoint, refresh_options);
+    if (refresh_response) {
+        console.log("Refresh Token OK")
+        // update setting_sheet with new token
+        const body: typeRefreshResponse = JSON.parse(refresh_response.getContentText());
+        const { token, refresh_token } = body
+        setting_sheet.getRange("B4").setValue(token);
+        setting_sheet.getRange("B5").setValue(refresh_token);
+        // 再次執行一次取得資料
+        await getSimplyBookDetail(booking_id);
+    } else {
+        // 如果 refresh_response 錯了
+        // 重新取得 token
+        console.log("Refresh Token ERROR, Get Token Start")
+        await getSimplybookToken(booking_id);
+    }
+}
+
+const getSimplybookToken = async (booking_id: string) => {
+    // refresh_token 又錯了，重頭來申請 token
+    const setting_sheet = ws.getSheetByName('Settings')!;
+
+    const url: string = setting_sheet.getRange("B2").getValue();
+    const company: string = setting_sheet.getRange("B3").getValue();
+    const token_endpoint = `${url}/admin/auth`;
+    const login: string = setting_sheet.getRange("B6").getValue();
+    const password: string = setting_sheet.getRange("B7").getValue();
+    const token_options: typeRequestOptions = {
+        method: 'post',
+        headers: {
+            "Accept": "*/*",
+            "Content-Type": "application/json"
+        },
+        payload: JSON.stringify({
+            company,
+            login,
+            password
+        })
+    }
+    const token_response: GoogleAppsScript.URL_Fetch.HTTPResponse | null = await sendRequest(token_endpoint, token_options);
+    if (token_response) {
+        console.log("Get Token OK")
+        // 確定得到新的 token，則更新
+        const body: typeRefreshResponse = JSON.parse(token_response.getContentText());
+        const { token, refresh_token } = body
+        setting_sheet.getRange("B4").setValue(token);
+        setting_sheet.getRange("B5").setValue(refresh_token);
+        // get data one more time
+        await getSimplyBookDetail(booking_id);
+    } else {
+        console.log("Get Token ERROR")
+        console.log('Simplybook login / password 錯了');
+        // Todo: mail to tommy
+    }
 }
 
 // create / update in booking_list sheet
