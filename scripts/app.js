@@ -6,13 +6,15 @@
   // if url pathname "full" line liffID = bbbb
   // if url pathname "compact" line liffID = cccc
 
-  //   let liffID = "XXXXXXXXXXXXXXXXXXX";
-  //   if (new URL(location).pathname.includes("tall")) liffID = "aaa";
-  //   if (new URL(location).pathname.includes("full")) liffID = "bbb";
-  //   if (new URL(location).pathname.includes("compact")) liffID = "ccc";
+  let liffId = null;
+  if (new URL(location).pathname.includes("tall"))
+    liffId = "2004166882-p8e0rDvx";
+  if (new URL(location).pathname.includes("full"))
+    liffId = "2004166882-GX8KoO4m";
+  if (new URL(location).pathname.includes("compact"))
+    liffId = "2004166882-3QWVx8qR";
 
-  const liffID = "2004166882-p8e0rDvx";
-  await liff.init({ liffId: liffID });
+  await liff.init({ liffId });
   console.log("Step1: ", "LIFF INIT");
 
   // STEP2 check is logined or not
