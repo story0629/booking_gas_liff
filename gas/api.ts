@@ -210,10 +210,10 @@ const simplybookLog = (type: typeNotificationType, detail: typeSimplyBookDetail)
     const payment_number = additional_fields.find(field => field.id === 7)!.value;
 
     const booking = []
-    booking.push(last_row - 1); // index
-    booking.push(""); // customer_id
-    booking.push(detail.id); // booking_id
-    booking.push(detail.client.id); // simplybook client id
+    if (type === 'create') booking.push(last_row - 1); // index
+    if (type === 'create') booking.push(""); // customer_id
+    if (type === 'create') booking.push(detail.id); // booking_id
+    if (type === 'create') booking.push(detail.client.id); // simplybook client id
     booking.push(detail.client.name); // simplybook client name
     booking.push(detail.client.email); // simplybook client email
     booking.push(detail.client.phone); // simplybook client phone
@@ -237,7 +237,8 @@ const simplybookLog = (type: typeNotificationType, detail: typeSimplyBookDetail)
     booking.push(current_datetime) // update_at
 
     // fill booking to sheet Booking_List
-    sheet.getRange(booking_row, 1, 1, booking.length).setValues([booking]);
+    const start_column = type === 'create' ? 1 : 5; // 只更新後面的資訊
+    sheet.getRange(booking_row, start_column, 1, booking.length).setValues([booking]);
 
     // Step2：INSERT INTO customer_list if customer_id is not exist
     // content like ["", "", customer_id, customer_name, email, phone, ]
