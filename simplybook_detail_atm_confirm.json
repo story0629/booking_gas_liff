@@ -1,6 +1,13 @@
 {
     "log": [
         {
+            "id": 5,
+            "datetime": "2024-04-10 13:09:06",
+            "type": "confirm",
+            "user_login": null,
+            "user_name": null
+        },
+        {
             "id": 4,
             "datetime": "2024-04-10 13:03:19",
             "type": "confirm",
@@ -91,10 +98,10 @@
         "payment_link": null,
         "client_additional_info": [],
         "id": 2,
-        "number": "O-00000002",
+        "number": "SI-2024000002",
         "datetime": "2024-04-10 12:53:18",
         "due_datetime": "2024-04-10 13:03:18",
-        "payment_datetime": null,
+        "payment_datetime": "2024-04-10 13:09:06",
         "amount": 5.0,
         "recurring_amount": 0.0,
         "deposit": 5.0,
@@ -108,8 +115,8 @@
         "tip": null,
         "client_id": 1,
         "description": "",
-        "payment_received": false,
-        "payment_processor": "delay",
+        "payment_received": true,
+        "payment_processor": "Wire transfer",
         "lines": [
             {
                 "booking_ids": [
@@ -153,7 +160,7 @@
         "deposit_parent_invoice": null,
         "refund_datetime": null,
         "sbpay_reference_id": 6,
-        "sbpay_invoice_id": ""
+        "sbpay_invoice_id": "dd97b1db-fc28-4222-bfff-4e8ce0f63396"
     },
     "membership": null,
     "user_status": null,
@@ -221,10 +228,10 @@
     "membership_id": null,
     "invoice_id": 2,
     "invoice_status": "paid",
-    "invoice_payment_received": false,
-    "invoice_number": "O-00000002",
+    "invoice_payment_received": true,
+    "invoice_number": "SI-2024000002",
     "invoice_datetime": "2024-04-10 12:53:18",
-    "invoice_payment_processor": "delay",
+    "invoice_payment_processor": "Wire transfer",
     "ticket_code": null,
     "ticket_validation_datetime": null,
     "ticket_is_used": null,

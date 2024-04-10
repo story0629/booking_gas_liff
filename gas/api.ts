@@ -32,6 +32,7 @@ interface typeSimplyBookDetail {
     invoice_datetime: string; // UTC+8
     payment_received: boolean;
     invoice_payment_received: boolean;
+    invoice_payment_processor: string;
     service: typeSimplyBookService;
     client: typeSimplyBookClient;
     log: typeSimplyBookLog[];
@@ -259,17 +260,16 @@ const simplybookLog = (type: typeNotificationType, detail: typeSimplyBookDetail)
     // content like [row id -1, "", booking_id, service.name, start_datetime, end_datetime, service.price, ]
 
     const { log, additional_fields } = detail;
-    // 想詢問的內容 - id = 2
-    // 從哪裡知道 tommy - id = 3
-    // LINE 名稱 - id = 4
-    // 匯款後 5 碼 - id = 7
-    // 匯款日期 id = 8
+    // 想詢問的內容 - id = 1
+    // 從哪裡知道 tommy - id = 2
+    // LINE ID - id = ˇ
+    // 匯款後 5 碼 - id = 4
 
     const take_booking_date = log.find(field => field.type === 'create')!.datetime;
-    const ask_content = additional_fields.find(field => field.id === 2)!.value;
-    const how_to_know_tommy = additional_fields.find(field => field.id === 3)!.value;
-    const line_name = additional_fields.find(field => field.id === 4)!.value;
-    const payment_number = additional_fields.find(field => field.id === 7)!.value;
+    const ask_content = additional_fields.find(field => field.id === 1)!.value;
+    const how_to_know_tommy = additional_fields.find(field => field.id === 2)!.value;
+    const line_name = additional_fields.find(field => field.id === 3)!.value;
+    const payment_number = additional_fields.find(field => field.id === 4)!.value;
 
     const booking = []
     if (type === 'create') booking.push(last_row - 1); // index
@@ -287,7 +287,7 @@ const simplybookLog = (type: typeNotificationType, detail: typeSimplyBookDetail)
     booking.push(ask_content); // 詢問內容
     booking.push(how_to_know_tommy); // 從哪裡知道 tomm
     booking.push(detail.service.price); // simplybook service price
-    booking.push(""); // payment_method 不知道資料在哪
+    booking.push(detail.invoice_payment_processor); // payment_method 不知道資料在哪
     booking.push(payment_number); // 後 5 碼
     booking.push(detail.invoice_payment_received); // 收款狀態 不知道是不是用這個
     booking.push(detail.status); // 訂單狀態 不知道是不是用這個

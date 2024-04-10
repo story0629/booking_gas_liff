@@ -108,6 +108,11 @@ flowchart
     - [ ] If LINE ID is a new, then Save LINE ID and LINE Name to Google Sheet
     - [ ] else if LIND ID is exist and LINE Name has updated, then Update LINE Name to Google sheet
     - [ ] else (have same LINE ID) then ignore it
+  - Send LINE Message or Email
+    - [ ] 預約成功 - 發送 LINE 訊息
+    - [ ] 收款成功 - 發送 LINE 訊息 & Google Meet 連結
+    - [ ] 更新成功 - 發送 LINE 訊息
+    - [ ] 取消成功 - 發送 LINE 訊息，跟客戶要 ATM 號碼，手工退款
 - LIFF
   - [X] LIFF html css
   - [X] LIFF javascript code
