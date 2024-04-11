@@ -268,7 +268,7 @@ const simplybookLog = (type: typeNotificationType, detail: typeSimplyBookDetail)
     const take_booking_date = log.find(field => field.type === 'create')!.datetime;
     const ask_content = additional_fields.find(field => field.id === 1)!.value;
     const how_to_know_tommy = additional_fields.find(field => field.id === 2)!.value;
-    const line_name = additional_fields.find(field => field.id === 3)!.value;
+    const line_id = additional_fields.find(field => field.id === 3)!.value;
     const payment_number = additional_fields.find(field => field.id === 4)!.value;
 
     const booking = []
@@ -279,15 +279,15 @@ const simplybookLog = (type: typeNotificationType, detail: typeSimplyBookDetail)
     booking.push(detail.client.name); // simplybook client name
     booking.push(detail.client.email); // simplybook client email
     booking.push(detail.client.phone); // simplybook client phone
-    booking.push(line_name); // LINE 名稱 name
+    booking.push(line_id); // LINE id
     booking.push(detail.service.name); // simplybook service name
-    booking.push(take_booking_date); // 預約的日期
+    booking.push(take_booking_date); // 預約下單日期
     booking.push(detail.start_datetime); // simplybook start 
     booking.push(detail.end_datetime); // simplybook end
     booking.push(ask_content); // 詢問內容
-    booking.push(how_to_know_tommy); // 從哪裡知道 tomm
+    booking.push(how_to_know_tommy); // 從哪裡知道 tommy
     booking.push(detail.service.price); // simplybook service price
-    booking.push(detail.invoice_payment_processor); // payment_method 不知道資料在哪
+    booking.push(detail.invoice_payment_processor); // payment_method 
     booking.push(payment_number); // 後 5 碼
     booking.push(detail.invoice_payment_received); // 收款狀態 不知道是不是用這個
     booking.push(detail.status); // 訂單狀態 不知道是不是用這個
