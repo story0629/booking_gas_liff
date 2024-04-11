@@ -256,8 +256,6 @@ const simplybookLog = (type: typeNotificationType, detail: typeSimplyBookDetail)
 
 
     // Step1：INSERT INTO booking_list
-    // [index, customer_id, booking_id, client_id, name, service_name, start date, end_date, price, payment_method, 後 5 碼, 確定付款, 訂單status, notion連結, create_at, update_at]
-    // content like [row id -1, "", booking_id, service.name, start_datetime, end_datetime, service.price, ]
 
     const { log, additional_fields } = detail;
     // 想詢問的內容 - id = 1
@@ -272,14 +270,14 @@ const simplybookLog = (type: typeNotificationType, detail: typeSimplyBookDetail)
     const payment_number = additional_fields.find(field => field.id === 4)!.value;
 
     const booking = []
-    if (type === 'create') booking.push(last_row - 1); // index
     if (type === 'create') booking.push(""); // customer_id
     if (type === 'create') booking.push(detail.id); // booking_id
     if (type === 'create') booking.push(detail.client.id); // simplybook client id
-    booking.push(detail.client.name); // simplybook client name
-    booking.push(detail.client.email); // simplybook client email
-    booking.push(detail.client.phone); // simplybook client phone
-    booking.push(line_id); // LINE id
+    if (type === 'create') booking.push(detail.client.name); // simplybook client name
+    if (type === 'create') booking.push(detail.client.email); // simplybook client email
+    if (type === 'create') booking.push(detail.client.phone); // simplybook client phone
+    if (type === 'create') booking.push(line_id); // LINE id
+    if (type === 'create') booking.push(""); // LINE sub
     booking.push(detail.service.name); // simplybook service name
     booking.push(take_booking_date); // 預約下單日期
     booking.push(detail.start_datetime); // simplybook start 
@@ -291,16 +289,23 @@ const simplybookLog = (type: typeNotificationType, detail: typeSimplyBookDetail)
     booking.push(payment_number); // 後 5 碼
     booking.push(detail.invoice_payment_received); // 收款狀態 不知道是不是用這個
     booking.push(detail.status); // 訂單狀態 不知道是不是用這個
+    booking.push(false); // 設定成已入金的 checkbox，固定為 false，由使用者 check
 
     const current_datetime: string = Utilities.formatDate(new Date(), timeZone, "yyyy-MM-dd HH:mm:ss")
-    const create_at = type === 'create' ? current_datetime : sheet.getRange(booking_row, 20).getValue();
+    const create_at = type === 'create' ? current_datetime : sheet.getRange(booking_row, 21).getValue();
 
     booking.push(create_at) // create_at
     booking.push(current_datetime) // update_at
 
     // fill booking to sheet Booking_List
-    const start_column = type === 'create' ? 1 : 5; // 只更新後面的資訊
+    const start_column = type === 'create' ? 1 : 9 // 只更新後面的資訊
+
+    console.log(type, booking_row, start_column)
+    console.log(booking)
+
     sheet.getRange(booking_row, start_column, 1, booking.length).setValues([booking]);
+    // 設定為 checkbox
+    sheet.getRange(booking_row, 20).insertCheckboxes();
 
     // Step2：INSERT INTO customer_list if customer_id is not exist
     // content like ["", "", customer_id, customer_name, email, phone, ]
