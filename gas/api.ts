@@ -263,11 +263,11 @@ const simplybookLog = (type: typeNotificationType, detail: typeSimplyBookDetail)
     // LINE ID - id = ˇ
     // 匯款後 5 碼 - id = 4
 
-    const take_booking_date = log.find(field => field.type === 'create')!.datetime;
-    const ask_content = additional_fields.find(field => field.id === 1)!.value;
-    const how_to_know_tommy = additional_fields.find(field => field.id === 2)!.value;
-    const line_id = additional_fields.find(field => field.id === 3)!.value;
-    const payment_number = additional_fields.find(field => field.id === 4)!.value;
+    const take_booking_date = log.find(field => field.type === 'create') ? log.find(field => field.type === 'create')!.datetime : '';
+    const ask_content = additional_fields.find(field => field.id === 1) ? additional_fields.find(field => field.id === 1)!.value : '';
+    const how_to_know_tommy = additional_fields.find(field => field.id === 2) ? additional_fields.find(field => field.id === 2)!.value : '';
+    const line_id = additional_fields.find(field => field.id === 3) ? additional_fields.find(field => field.id === 3)!.value : '';
+    const payment_number = additional_fields.find(field => field.id === 4) ? additional_fields.find(field => field.id === 4)!.value : '';
 
     const booking = []
     if (type === 'create') booking.push(""); // customer_id
