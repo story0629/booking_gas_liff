@@ -347,6 +347,13 @@ const savePostDataToSheet = async (type: typePostType, content: typePostContent)
         // Step1 記錄
         const { booking_id, notification_type } = content;
 
+
+        const date = new Date();
+        const current_datetime = Utilities.formatDate(date, timeZone, "yyyy-MM-dd HH:mm:ss");
+        const data = [current_datetime, booking_id, notification_type];
+        const sheet = ws.getSheetByName('SimblyBook_Notify')!;
+        sheet.getRange(sheet.getLastRow() + 1, 1, 1, data.length).setValues([data]);
+
         // Step2 先取得 Simplybook 的 詳細資料
         const booking_detail: typeSimplyBookDetail | null = await getSimplyBookDetail(booking_id);
 
