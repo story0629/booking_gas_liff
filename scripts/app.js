@@ -34,10 +34,10 @@
   // payload is user_info & goto concat
   user_info.goto = goto;
   console.log(user_info);
-  const response = sendPostRequest(user_info);
-  alert(response);
+  sendPostRequest(user_info);
+
   // STEP4 Redirect to goto
-  // if (typeof goto === "string") location.href = goto;
+  if (typeof goto === "string") location.href = goto;
 })();
 
 const sendPostRequest = async (payload) => {
