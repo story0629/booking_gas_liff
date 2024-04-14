@@ -20,7 +20,7 @@
   // STEP2 check is logined or not
   const isLogined = await liff.isLoggedIn();
   console.log("Step2: ", isLogined);
-  const goto = new URL(location).searchParams.get("goto");
+  const goto = getFullGotoParam();
 
   if (!isLogined) {
     // 轉址的網址 目前網址加上 goto
@@ -43,7 +43,7 @@
   sendPostRequest(user_info);
 
   // STEP4 Redirect to goto
-  if (typeof goto === "string") location.href = new URL(goto, location).href;
+  if (typeof goto === "string") location.href = goto;
 })();
 
 const sendPostRequest = async (payload) => {
@@ -62,4 +62,12 @@ const sendPostRequest = async (payload) => {
   // fetch 後不需要得到 response，直接 return
 
   return "";
+};
+
+const getFullGotoParam = () => {
+  const url = new URL(window.location.href);
+  const goto = url.searchParams.get("goto");
+  const hashPart = url.hash;
+
+  return decodeURIComponent(goto) + hashPart;
 };
