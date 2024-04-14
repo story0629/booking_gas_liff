@@ -48,7 +48,7 @@
 
 const sendPostRequest = async (payload) => {
   await fetch(
-    "https://script.google.com/macros/s/AKfycbz17-M5PkeoXZmoxGZqc9FFz_zVfmzhnsKy3-9KSiZnHePuZIXyg0s1o27CtN08Wj6anA/exec",
+    "https://script.google.com/macros/s/AKfycbw_o1awV04-WOPs2R8vUoPS_YzgKU_I708WWjjG14BStrlGaeHmNHYBlOE1JSblc7niTw/exec",
     {
       method: "POST",
       mode: "no-cors",

@@ -319,11 +319,11 @@ const simplybookLog = (type: typeNotificationType, detail: typeSimplyBookDetail)
 const liffCreate = (sheet: GoogleAppsScript.Spreadsheet.Sheet, content: typePostContent) => {
     // Step1：INSERT INTO LINE_OA_List sheet
     // content like [current datetime utc+8, sub, name, picture, email, goto]
-    const { sub, name, picture, email, goto } = content;
+    const { sub, name, picture, email, exp, iat, goto } = content;
 
     const date = new Date();
     const current_datetime = Utilities.formatDate(date, timeZone, "yyyy-MM-dd HH:mm:ss");
-    const data = [current_datetime, sub, name, picture, email, goto];
+    const data = [current_datetime, sub, name, picture, email, iat, exp, goto];
     sheet.getRange(sheet.getLastRow() + 1, 1, 1, data.length).setValues([data]);
 
     // Step2：Mapping with customer_list，
