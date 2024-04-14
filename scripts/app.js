@@ -43,11 +43,11 @@
   sendPostRequest(user_info);
 
   // STEP4 Redirect to goto
-  if (typeof goto === "string") location.href = goto;
+  // if (typeof goto === "string") location.href = goto;
 })();
 
 const sendPostRequest = async (payload) => {
-  await fetch(
+  const response = await fetch(
     "https://script.google.com/macros/s/AKfycbw_o1awV04-WOPs2R8vUoPS_YzgKU_I708WWjjG14BStrlGaeHmNHYBlOE1JSblc7niTw/exec",
     {
       method: "POST",
@@ -61,7 +61,7 @@ const sendPostRequest = async (payload) => {
   );
   // fetch 後不需要得到 response，直接 return
 
-  return "";
+  return response;
 };
 
 const getFullGotoParam = () => {
