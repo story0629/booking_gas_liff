@@ -6,13 +6,7 @@
   // if url pathname "full" line liffID = bbbb
   // if url pathname "compact" line liffID = cccc
 
-  let liffId = "2004166882-p8e0rDvx";
-  if (new URL(location).pathname.includes("tall"))
-    liffId = "2004166882-p8e0rDvx";
-  if (new URL(location).pathname.includes("full"))
-    liffId = "2004166882-GX8KoO4m";
-  if (new URL(location).pathname.includes("compact"))
-    liffId = "2004166882-3QWVx8qR";
+  let liffId = "2004166882-GX8KoO4m";
 
   await liff.init({ liffId });
   console.log("Step1: ", "LIFF INIT");
@@ -40,8 +34,8 @@
   // payload is user_info & goto concat
   user_info.goto = goto;
   console.log(user_info);
-  sendPostRequest(user_info);
-
+  const response = sendPostRequest(user_info);
+  alert(response);
   // STEP4 Redirect to goto
   // if (typeof goto === "string") location.href = goto;
 })();
@@ -61,7 +55,7 @@ const sendPostRequest = async (payload) => {
   );
   // fetch 後不需要得到 response，直接 return
 
-  return response;
+  return response.json();
 };
 
 const getFullGotoParam = () => {
