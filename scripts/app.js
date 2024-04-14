@@ -1,11 +1,6 @@
 (async () => {
   // STEP1 Init LIFF
 
-  // need to judge 3 types
-  // if url pathname "tall" line liffID = aaaa
-  // if url pathname "full" line liffID = bbbb
-  // if url pathname "compact" line liffID = cccc
-
   let liffId = "2004166882-GX8KoO4m";
 
   await liff.init({ liffId });
