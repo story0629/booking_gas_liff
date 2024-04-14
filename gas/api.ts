@@ -82,7 +82,7 @@ const doGet = (e: GoogleAppsScript.Events.DoGet) => {
 const doPost = (e: GoogleAppsScript.Events.DoPost) => {
 
     // judge content is string or not, if string then JSON.parse()
-    let content: typePostContent = e.postData.contents;
+    let content: typePostContent = typeof e.postData.contents === 'string' ? JSON.parse(e.postData.contents) : e.postData.contents;
     if (typeof e.postData.contents === 'string') {
         content = JSON.parse(e.postData.contents);
     }
