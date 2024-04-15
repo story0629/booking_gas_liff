@@ -1,7 +1,8 @@
 (async () => {
   // STEP1 Init LIFF
 
-  let liffId = "2004166882-GX8KoO4m";
+  let liffId = "2004166882-GX8KoO4m"; // LIFF FULL
+  // let liffId = "2004166882-6k5LZylq"; // LIFF TEST
 
   await liff.init({ liffId });
   console.log("Step1: ", "LIFF INIT");
@@ -30,27 +31,36 @@
   user_info.goto = goto;
   console.log(user_info);
   sendPostRequest(user_info);
-
   // STEP4 Redirect to goto
   if (typeof goto === "string") location.href = goto;
 })();
 
 const sendPostRequest = async (payload) => {
-  const response = await fetch(
-    "https://script.google.com/macros/s/AKfycbw_o1awV04-WOPs2R8vUoPS_YzgKU_I708WWjjG14BStrlGaeHmNHYBlOE1JSblc7niTw/exec",
-    {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "*/*",
-      },
-      body: JSON.stringify(payload),
-    }
-  );
-  // fetch 後不需要得到 response，直接 return
-
-  return response.json();
+  try {
+    // use xhr
+    const xhr = new XMLHttpRequest();
+    xhr.open(
+      "POST",
+      "https://script.google.com/macros/s/AKfycbz0wJxN7J8_5pJU18i4lg8rJl2HcdZVhk4W8QUyv8ICaW7j-7IiBP3TryXaEq3P96xh8A/exec",
+      true
+    );
+    xhr.setRequestHeader("Content-Type", "text/plain");
+    xhr.setRequestHeader("Accept", "*/*");
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        // 請求成功,可以在這裡處理回應
+        console.log(xhr.responseText);
+      }
+    };
+    xhr.onerror = function () {
+      // 請求發生錯誤
+      console.error(xhr.statusText);
+    };
+    xhr.send(JSON.stringify(payload));
+    // fetch 後不需要得到 response，直接 return
+  } catch (error) {
+    return error;
+  }
 };
 
 const getFullGotoParam = () => {
