@@ -279,11 +279,16 @@ const simplybookLog = (type: typeNotificationType, detail: typeSimplyBookDetail)
         // 如果 type 不是 create，需要先找到之前預約的 row number
         const last_row = sheet.getLastRow()
 
+        const booking_ids_original: string[][] = sheet.getRange("B:B").getValues();
+        const booking_ids = booking_ids_original.map((d: string[]) => d[0].toString())
+        const booking_index = booking_ids.indexOf(booking_id)
         if (type !== 'create') {
-            const booking_ids_original: string[][] = sheet.getRange("B:B").getValues();
-            const booking_ids = booking_ids_original.map((d: string[]) => d[0].toString())
-            booking_row = booking_ids.indexOf(booking_id) + 1 // 得到的是 index，從 0 開始，但 sheet 從 1 開始
+            booking_row = booking_index + 1 // 得到的是 index，從 0 開始，但 sheet 從 1 開始
         } else {
+            if (booking_index > -1) {
+                console.log('Booking id ' + booking_id + "already insert!!")
+                return 'Already insert'
+            }
             booking_row = last_row + 1 // last_row 是目前最後一行有資料，我要在他的下一行
         }
 
@@ -409,7 +414,7 @@ const savePostDataToSheet = async (type: typePostType, content: typePostContent)
             const booking_detail: typeSimplyBookDetail | null = await getSimplyBookDetail(booking_id);
 
             if (!booking_detail) {
-                return 'booking_detail is null';
+                throw new Error('booking_detail is null');
             }
 
             simplybookLog(notification_type, booking_detail);
