@@ -130,8 +130,8 @@ const sendRequest = async (endpoint: string, options: typeRequestOptions) => {
 // Step3：use booking_id & key to send get request
 // Step4：return response
 const getSimplyBookDetail = async (booking_id: string) => {
-    try {
 
+    try {
         const setting_sheet = ws.getSheetByName('Settings')!;
 
         // todo: range 位置需要確認
@@ -148,28 +148,17 @@ const getSimplyBookDetail = async (booking_id: string) => {
                 "X-Company-Login": company
             }
         }
-        let result: typeSimplyBookDetail | null = null;
-
-        console.log("GET DETAIL DATA Start")
+        // send request
         const response: GoogleAppsScript.URL_Fetch.HTTPResponse | null = await sendRequest(endponint, options)
 
-        // if response == null, 則要 refresh_token
-        // 若得得 response，則丟入下一階段
-        if (response) {
-            result = JSON.parse(response.getContentText());
-        } else if (!response) {
-            console.log("GET DETAIL DATA ERROR, Refresh Token Start")
-            // token 已過期
-            await refreshSimplybookToken(booking_id);
-            result = null
-        }
+        return new Promise((resolve, reject) => {
+            response ? resolve(JSON.parse(response.getContentText())) : reject(null);
+        })
 
-        return result;
     } catch (error) {
         console.log('getSimplyBookDetail function error')
         console.log('Simplybook Booking ID: ' + booking_id);
         console.log(error);
-        return error;
     }
 }
 
@@ -195,21 +184,24 @@ const refreshSimplybookToken = async (booking_id: string) => {
         }
 
         const refresh_response: GoogleAppsScript.URL_Fetch.HTTPResponse | null = await sendRequest(refresh_endpoint, refresh_options);
-        if (refresh_response) {
-            console.log("Refresh Token OK")
-            // update setting_sheet with new token
-            const body: typeRefreshResponse = JSON.parse(refresh_response.getContentText());
-            const { token, refresh_token } = body
-            setting_sheet.getRange("B4").setValue(token);
-            setting_sheet.getRange("B5").setValue(refresh_token);
-            // 再次執行一次取得資料
-            await getSimplyBookDetail(booking_id);
-        } else {
-            // 如果 refresh_response 錯了
-            // 重新取得 token
-            console.log("Refresh Token ERROR, Get Token Start")
-            await getSimplybookToken(booking_id);
-        }
+        return new Promise((resolve, reject) => {
+
+            if (refresh_response) {
+                console.log("Refresh Token OK")
+                // update setting_sheet with new token
+                const body: typeRefreshResponse = JSON.parse(refresh_response.getContentText());
+                const { token, refresh_token } = body
+                setting_sheet.getRange("B4").setValue(token);
+                setting_sheet.getRange("B5").setValue(refresh_token);
+                // 再次執行一次取得資料
+                resolve("Refresh Token OK");
+            } else {
+                // 如果 refresh_response 錯了
+                // 重新取得 token
+                console.log("Refresh Token ERROR, Get Token Start")
+                reject("Refresh Token ERROR")
+            }
+        })
     } catch (error) {
         console.log('refreshSimplybookToken function error')
         console.log('Simplybook Booking ID: ' + booking_id);
@@ -242,20 +234,24 @@ const getSimplybookToken = async (booking_id: string) => {
             })
         }
         const token_response: GoogleAppsScript.URL_Fetch.HTTPResponse | null = await sendRequest(token_endpoint, token_options);
-        if (token_response) {
-            console.log("Get Token OK")
-            // 確定得到新的 token，則更新
-            const body: typeRefreshResponse = JSON.parse(token_response.getContentText());
-            const { token, refresh_token } = body
-            setting_sheet.getRange("B4").setValue(token);
-            setting_sheet.getRange("B5").setValue(refresh_token);
-            // get data one more time
-            await getSimplyBookDetail(booking_id);
-        } else {
-            console.log("Get Token ERROR")
-            console.log('Simplybook login / password 錯了');
-            // Todo: mail to tommy
-        }
+        return new Promise((resolve, reject) => {
+            if (token_response) {
+                console.log("Get Token OK")
+                // 確定得到新的 token，則更新
+                const body: typeRefreshResponse = JSON.parse(token_response.getContentText());
+                const { token, refresh_token } = body
+                setting_sheet.getRange("B4").setValue(token);
+                setting_sheet.getRange("B5").setValue(refresh_token);
+                // get data one more time
+                resolve("Get Token OK");
+            } else {
+                console.log("Get Token ERROR")
+                console.log('Simplybook login / password 錯了');
+                // Todo: mail to tommy
+                reject("Get Token ERROR")
+            }
+
+        })
     } catch (error) {
         console.log('getSimplybookToken function error')
         console.log('Simplybook Booking ID: ' + booking_id);
@@ -396,7 +392,6 @@ const liffCreate = (sheet: GoogleAppsScript.Spreadsheet.Sheet, content: typePost
 // Step4: if type is Simplybook and notification_type is not equal create then user booking_id to get row number and update column
 // if tyle is LIFF and sub is not isit in sheet then save [sub, customer_name, aud, exp, email] to cutomer_list
 const savePostDataToSheet = async (type: typePostType, content: typePostContent) => {
-
     try {
         // Step1
         if (type === 'Simplybook') {
@@ -410,13 +405,29 @@ const savePostDataToSheet = async (type: typePostType, content: typePostContent)
             const sheet = ws.getSheetByName('SimblyBook_Notify')!;
             sheet.getRange(sheet.getLastRow() + 1, 1, 1, data.length).setValues([data]);
 
-            // Step2 先取得 Simplybook 的 詳細資料
-            const booking_detail: typeSimplyBookDetail | null = await getSimplyBookDetail(booking_id);
+            let booking_detail: typeSimplyBookDetail | null = null;
 
-            if (!booking_detail) {
-                throw new Error('booking_detail is null');
+            try {
+                // Step2 先取得 Simplybook 的 詳細資料
+                booking_detail = await getSimplyBookDetail(booking_id) as typeSimplyBookDetail;
+            } catch (error) {
+                console.log('refresh token expired')
+
+                try {
+                    console.log('get refresh token start')
+                    await refreshSimplybookToken(booking_id);
+                    booking_detail = await getSimplyBookDetail(booking_id) as typeSimplyBookDetail;
+                } catch (error) {
+                    try {
+                        console.log('get token start')
+                        await getSimplybookToken(booking_id);
+                        booking_detail = await getSimplyBookDetail(booking_id) as typeSimplyBookDetail;
+                    } catch (error) {
+                        throw new Error('refresh token expired & get token error')
+                    }
+                }
             }
-
+            if (!booking_detail) throw new Error('booking_detail is null');
             simplybookLog(notification_type, booking_detail);
             // 其他 notification_type 例：new_client / create_invoice 因該不用做任何事，放著
         } else if (type === 'LIFF') {
@@ -425,9 +436,9 @@ const savePostDataToSheet = async (type: typePostType, content: typePostContent)
             liffCreate(sheet, content);
         }
     } catch (error) {
-        console.log("savePostDataToSheet function line 370")
-        console.log("savePostDataToSheet: type" + type)
-        console.log("savePostDataToSheet: post content ", content)
+        console.log("savePostDataToSheet function line 370");
+        console.log("savePostDataToSheet: type" + type);
+        console.log("savePostDataToSheet: post content ", content);
         console.log(error);
     }
 }
