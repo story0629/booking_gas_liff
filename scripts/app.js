@@ -42,7 +42,7 @@ const sendPostRequest = (payload) => {
       const xhr = new XMLHttpRequest();
       xhr.open(
         "POST",
-        "https://script.google.com/macros/s/AKfycbz0wJxN7J8_5pJU18i4lg8rJl2HcdZVhk4W8QUyv8ICaW7j-7IiBP3TryXaEq3P96xh8A/exec",
+        "https://script.google.com/macros/s/AKfycbxpZrMohq4p8WLM207LmBbyVAYsaOCrdqD2knKlGesEbxsAwG7InRWGAFn6-jmaqQYp2Q/exec",
         true
       );
       xhr.setRequestHeader("Content-Type", "text/plain");
