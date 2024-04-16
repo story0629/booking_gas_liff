@@ -30,11 +30,13 @@ interface typeSimplyBookDetail {
     start_datetime: string;
     end_datetime: string;
     invoice_datetime: string; // UTC+8
+    service_id: number;
     payment_received: boolean;
     invoice_payment_received: boolean;
     invoice_payment_processor: string;
     service: typeSimplyBookService;
     client: typeSimplyBookClient;
+    invoice: typeSimplyBookInvoice;
     log: typeSimplyBookLog[];
     additional_fields: typeSimplyBookAdditionalFields[];
 }
@@ -43,6 +45,14 @@ interface typeSimplyBookService {
     id: number;
     name: string;
     price: number;
+}
+
+interface typeSimplyBookInvoice {
+    number: string;
+    datetime: string;
+    amount: number;
+    deposit: number;
+    discount_amount: number;
 }
 
 interface typeSimplyBookClient {
@@ -306,7 +316,7 @@ const simplybookLog = (type: typeNotificationType, detail: typeSimplyBookDetail)
         booking.push(detail.end_datetime); // simplybook end
         booking.push(ask_content); // 詢問內容
         booking.push(how_to_know_tommy); // 從哪裡知道 tommy
-        booking.push(detail.service.price); // simplybook service price
+        booking.push(detail.service.price > 0 ? detail.invoice.amount : detail.service.price); // simplybook service price 0 免費的話就寫 0，付費的話寫 amount
         booking.push(detail.invoice_payment_processor); // payment_method 
         booking.push(payment_number); // 後 5 碼
         booking.push(detail.invoice_payment_received); // 收款狀態 不知道是不是用這個
