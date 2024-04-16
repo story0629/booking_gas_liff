@@ -32,7 +32,7 @@
   console.log(user_info);
   sendPostRequest(user_info);
   // STEP4 Redirect to goto
-  // if (typeof goto === "string") location.href = goto;
+  if (typeof goto === "string") location.href = goto;
 })();
 
 const sendPostRequest = async (payload) => {

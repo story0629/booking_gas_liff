@@ -83,10 +83,6 @@ const doPost = (e: GoogleAppsScript.Events.DoPost) => {
 
     // judge content is string or not, if string then JSON.parse()
     let content: typePostContent = typeof e.postData.contents === 'string' ? JSON.parse(e.postData.contents) : e.postData.contents;
-    if (typeof e.postData.contents === 'string') {
-        content = JSON.parse(e.postData.contents);
-    }
-
     const type: typePostType = content.hasOwnProperty('booking_id') ? 'Simplybook' : 'LIFF';
     savePostDataToSheet(type, content);
 
