@@ -39,9 +39,13 @@ const setPayment = async () => {
     const sheet = ws.getSheetByName('Booking_List')!;
     const datas = sheet.getDataRange().getValues();
     // Step2：Filter data[19] == true
-    const filterData = datas.filter(item => item[19] == true);
+    const filterData = datas.filter(item => item[19] === true && item[17] === false);
     const filterDelayData = filterData.filter(item => item[15] === 'delay');
     // Step3：Parse payment method = 'delay' data to setSimplyBookPayment function
+
+    if (!filterData.length) {
+        throw new Error('No data');
+    }
 
     const date = new Date();
     const current_datetime = Utilities.formatDate(date, timeZone, "yyyy-MM-dd HH:mm:ss");
@@ -49,32 +53,47 @@ const setPayment = async () => {
     for (const data of filterDelayData) {
         const booking_id = data[1];
         console.log(booking_id);
-        const booking_row = datas.indexOf(data);
+        const booking_row = datas.indexOf(data) + 1; // to number
         console.log(booking_row);
         try {
             const res = await setSimplyBookPayment(data)
             console.log(res);
-            res ? sheet.getRange("R" + booking_row + 1).setValue(true) : '';
-            res ? sheet.getRange("V" + booking_row + 1).setValue(current_datetime) : '';
-            sheet.getRange("T" + booking_row + 1).setValue(false);
+            res ? sheet.getRange("R" + booking_row).setValue(true) : '';
+            res ? sheet.getRange("V" + booking_row).setValue(current_datetime) : '';
+            sheet.getRange("T" + booking_row).setValue(false);
         } catch (error) {
             try {
                 await refreshSimplybookToken(booking_id)
                 const res = await setSimplyBookPayment(data)
                 console.log(res);
-                res ? sheet.getRange("R" + booking_row + 1).setValue(true) : '';
-                res ? sheet.getRange("V" + booking_row + 1).setValue(current_datetime) : '';
-                sheet.getRange("T" + booking_row + 1).setValue(false);
+                res ? sheet.getRange("R" + booking_row).setValue(true) : '';
+                res ? sheet.getRange("V" + booking_row).setValue(current_datetime) : '';
+                sheet.getRange("T" + booking_row).setValue(false);
             } catch (error) {
                 await getSimplybookToken(booking_id)
                 const res = await setSimplyBookPayment(data)
                 console.log(res);
-                res ? sheet.getRange("R" + booking_row + 1).setValue(true) : '';
-                res ? sheet.getRange("V" + booking_row + 1).setValue(current_datetime) : '';
-                sheet.getRange("T" + booking_row + 1).setValue(false);
+                res ? sheet.getRange("R" + booking_row).setValue(true) : '';
+                res ? sheet.getRange("V" + booking_row).setValue(current_datetime) : '';
+                sheet.getRange("T" + booking_row).setValue(false);
             }
         }
     }
 
     // Step4：send line message, execute sendLineMessage function()
+    // 針對 ATM & 信用卡的人
+    for (const data of filterData) {
+        const to = data[7]
+        const meeting_time = data[10]
+        const format_meeting_time = Utilities.formatDate(meeting_time, timeZone, "yyyy-MM-dd HH:mm");
+        if (!to) {
+            continue;
+        }
+        const messages: typeLinePayload = {
+            to,
+            messages: [{ type: "text", text: `Hello你好，您的款項已經確認收到了，謝謝你。\n ${format_meeting_time} 線上見。` }]
+        }
+        await sendLineMessage(messages);
+    }
+
 }
