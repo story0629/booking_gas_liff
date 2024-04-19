@@ -31,6 +31,7 @@ interface typeSimplyBookDetail {
     end_datetime: string;
     invoice_datetime: string; // UTC+8
     service_id: number;
+    invoice_id: number;
     payment_received: boolean;
     invoice_payment_received: boolean;
     invoice_payment_processor: string;
@@ -101,7 +102,7 @@ const doPost = (e: GoogleAppsScript.Events.DoPost) => {
 }
 
 interface typeRequestOptions {
-    method: 'get' | 'post';
+    method: 'get' | 'post' | 'put';
     headers?: {
         [key: string]: string;
     },
@@ -305,7 +306,7 @@ const simplybookLog = (type: typeNotificationType, detail: typeSimplyBookDetail)
 
         if (type === 'create') booking.push(""); // customer_id
         if (type === 'create') booking.push(detail.id); // booking_id
-        if (type === 'create') booking.push(detail.client.id); // simplybook client id
+        if (type === 'create') booking.push(detail.invoice_id); // simplybook client id
         if (type === 'create') booking.push(detail.client.name); // simplybook client name
         if (type === 'create') booking.push(detail.client.email); // simplybook client email
         if (type === 'create') booking.push(detail.client.phone); // simplybook client phone
