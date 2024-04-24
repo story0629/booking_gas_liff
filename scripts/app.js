@@ -30,7 +30,12 @@
   // payload is user_info & goto concat
   user_info.goto = goto;
   // console.log(user_info);
-  await sendPostRequest(user_info);
+
+  try {
+    await sendPostRequest(user_info);
+  } catch (error) {
+    console.log(error);
+  }
   // STEP4 Redirect to goto
   if (typeof goto === "string") location.href = goto;
 })();
