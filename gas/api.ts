@@ -92,13 +92,17 @@ const doGet = (e: GoogleAppsScript.Events.DoGet) => {
 // Step4：return ok
 const doPost = (e: GoogleAppsScript.Events.DoPost) => {
 
-    // judge content is string or not, if string then JSON.parse()
-    let content: typePostContent = typeof e.postData.contents === 'string' ? JSON.parse(e.postData.contents) : e.postData.contents;
-    const type: typePostType = content.hasOwnProperty('booking_id') ? 'Simplybook' : 'LIFF';
-    savePostDataToSheet(type, content);
+    try {
+        // judge content is string or not, if string then JSON.parse()
+        let content: typePostContent = typeof e.postData.contents === 'string' ? JSON.parse(e.postData.contents) : e.postData.contents;
+        const type: typePostType = content.hasOwnProperty('booking_id') ? 'Simplybook' : 'LIFF';
+        savePostDataToSheet(type, content);
 
-    return ContentService.createTextOutput(JSON.stringify({ status: "ok" }))
-        .setMimeType(ContentService.MimeType.JSON);
+        return ContentService.createTextOutput(JSON.stringify({ status: "ok" }))
+            .setMimeType(ContentService.MimeType.JSON);
+    } catch (error) {
+        return ContentService.createTextOutput(error.message);
+    }
 }
 
 interface typeRequestOptions {
