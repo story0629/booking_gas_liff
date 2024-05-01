@@ -99,19 +99,27 @@ flowchart
     - [X] Use simplybook api to get booking detail
     - [X] When Create booking
       - [X] Save data to Google Sheet
-      - [ ] Update google calendar content
     - [X] Simplybook others status (update / cancel / new_client...)
       - [X] Use booking id to find row number
       - [X] Update it
+      - Send LINE Message
+        - 取消：
+          - [ ] 傳訊息給消費者
+    - 設定為已收款
+      - [X] 設定在 settings，最後確認已收款日，例：2024/04/10 20:00
+      - [X] filter booking_list，
+        - [X] update_at 在 2024/04/10 20:00 後，
+        - [X] 付款方式為 ecpay & delay 
+      - [X] Use simplybook api to update it
+      - [X] 傳送 LINE 訊息
   - LIFF
     - [X] Take record
     - [ ] If LINE ID is a new, then Save LINE ID and LINE Name to Google Sheet
     - [ ] else if LIND ID is exist and LINE Name has updated, then Update LINE Name to Google sheet
     - [ ] else (have same LINE ID) then ignore it
   - Send LINE Message or Email
-    - [ ] 預約成功 - 發送 LINE 訊息
-    - [ ] 收款成功 - 發送 LINE 訊息 & Google Meet 連結
-    - [ ] 更新成功 - 發送 LINE 訊息
+    - [X] 預約成功 - 發送 LINE 訊息
+    - [X] 收款成功 - 發送 LINE 訊息 & Google Meet 連結
     - [ ] 取消成功 - 發送 LINE 訊息，跟客戶要 ATM 號碼，手工退款
 - LIFF
   - [X] LIFF html css
