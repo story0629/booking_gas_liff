@@ -39,7 +39,7 @@ const setPayment = async () => {
     const sheet = ws.getSheetByName('Booking_List')!;
     const datas = sheet.getDataRange().getValues();
     // Step2：Filter data[19] == true
-    const filterData = datas.filter(item => item[19] === true && item[17] === false);
+    const filterData = datas.filter(item => item[19] === true);
     const filterDelayData = filterData.filter(item => item[15] === 'delay');
     // Step3：Parse payment method = 'delay' data to setSimplyBookPayment function
 
@@ -86,13 +86,14 @@ const setPayment = async () => {
         const to = data[7]
         const meeting_time = data[10]
         const format_meeting_time = Utilities.formatDate(meeting_time, timeZone, "yyyy-MM-dd HH:mm");
+        const money = data[14]
         if (!to) {
             continue;
         }
         const messages: typeLinePayload = {
             to,
-            messages: [{ type: "text", text: `Hello你好，您的款項已經確認收到了，謝謝你。\n ${format_meeting_time} 線上見。` }]
-        }
+            messages: [{ type: "text", text: `Hello你好，您的預約${money > 0 ? " & 款項" : ""}已經確認收到了\n，謝謝你。\n ${format_meeting_time} 線上見。` }]
+        };
         await sendLineMessage(messages);
     }
 
