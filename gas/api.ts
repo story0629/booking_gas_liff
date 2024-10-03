@@ -93,6 +93,8 @@ const doGet = (e: GoogleAppsScript.Events.DoGet) => {
 const doPost = (e: GoogleAppsScript.Events.DoPost) => {
 
     try {
+        console.log("DO POST")
+        console.log(e.postData.contents)
         // judge content is string or not, if string then JSON.parse()
         let content: typePostContent = typeof e.postData.contents === 'string' ? JSON.parse(e.postData.contents) : e.postData.contents;
         const type: typePostType = content.hasOwnProperty('booking_id') ? 'Simplybook' : 'LIFF';
@@ -100,8 +102,11 @@ const doPost = (e: GoogleAppsScript.Events.DoPost) => {
 
         return ContentService.createTextOutput(JSON.stringify({ status: "ok" }))
             .setMimeType(ContentService.MimeType.JSON);
-    } catch (error) {
-        return ContentService.createTextOutput(error.message);
+    } catch (error: any) {
+        console.log(error);
+        if (error.message) {
+            return ContentService.createTextOutput(error.message);
+        }
     }
 }
 

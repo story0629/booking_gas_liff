@@ -14,7 +14,7 @@ const sendLineReminder = async (type: typeNotifyType) => {
         const booking_date = new Date(data[10]);
         booking_date.setHours(0, 0, 0, 0);
         const to = data[7]
-        const meeting_time = data[10]
+        const meeting_time = new Date(data[10])
         const format_meeting_time = Utilities.formatDate(meeting_time, timeZone, "HH:mm");
         let message_text = null
 
