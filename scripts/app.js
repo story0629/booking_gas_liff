@@ -47,7 +47,7 @@ const sendPostRequest = (payload) => {
       const xhr = new XMLHttpRequest();
       xhr.open(
         "POST",
-        "https://script.google.com/macros/s/AKfycbwpfr0AP83HRD_T0veLWmDg28qdFpu_sxQlN4p6WifJb8DQEUswP8_ddXJksJUw3lCmXw/exec",
+        "https://hooks.zapier.com/hooks/catch/3479556/2mj4uuk/",
         true
       );
       xhr.setRequestHeader("Content-Type", "text/plain");
